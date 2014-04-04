@@ -47,8 +47,7 @@ yawn_notification_preset = {}
 
 local function fetch_weather()
     local url = api_url .. units_set .. city_id
-    local f = io.popen("curl --connect-timeout 1 -fsm 1 '"
-                       .. url .. "'" )
+    local f = io.popen("curl --connect-timeout 1 -fsm 3 '" .. url .. "'" )
     local text = f:read("*all")
     f:close()
 
@@ -59,24 +58,24 @@ local function fetch_weather()
         yawn.icon:set_image(icon_path .. "na.png")
         if text == "" then
             weather_data = "Service not available at the moment."
-            yawn.widget:set_text("N/A")
+            yawn.widget:set_text(" N/A ")
         else
             weather_data = "City not found!\n" ..
                            "Are you sure " .. city_id ..
                            " is your Yahoo city ID?"
-            yawn.widget:set_text("?")
+            yawn.widget:set_text(" ? ")
         end
         return
     end
 
     -- Processing raw data
     weather_data = text:gsub("<.->", "")
-    weather_data = weather_data:match("Current Conditions:.-Full")
-    if weather_data == "" or weather_data == nil
-    then
+    weather_data = weather_data:match("Current Conditions:.-Full") or ""
+
+    -- may still happens in case of bad connectivity
+    if weather_data == "" then
         yawn.icon:set_image(icon_path .. "na.png")
-        weather_data = "Service not available at the moment."
-        yawn.widget:set_text("N/A")
+        yawn.widget:set_text(" ? ")
         return
     end
 
@@ -115,11 +114,8 @@ local function fetch_weather()
     sky = sky  .. forecast:gsub(" ", ""):gsub("/", "") .. ".png"
 
     -- In case there's no defined icon for current forecast
-    f = io.popen(sky)
-    if f == nil then
+    if io.open(sky) == nil then
         sky = icon_path .. "na.png"
-    else
-        io.close(f)
     end
 
     -- Localization
@@ -139,7 +135,8 @@ local function fetch_weather()
     yawn.icon:set_image(sky)
     widget = yawn.widget
 
-    forecast = weather_data:match(": %S.-,"):gsub(": ", ""):gsub(",", "")
+    _data = weather_data:match(": %S.-,") or weather_data
+    forecast = _data:gsub(": ", ""):gsub(",", "")
     units = units:gsub(" ", "")
 
     settings()
@@ -153,7 +150,7 @@ function yawn.hide()
 end
 
 function yawn.show(t_out)
-    if yawn.widget._layout.text == "?"
+    if yawn.widget._layout.text:match("?")
     then
         fetch_weather(settings)
     end

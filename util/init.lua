@@ -38,10 +38,7 @@ function util.menu_clients_current_tags(menu, args)
     -- Final list of menu items.
     local cls_t = {}
 
-    if cls_tags == nil
-    then
-        return nil
-    end
+    if cls_tags == nil then return nil end
 
     -- For each selected tag get all clients of that tag and add them to
     -- the menu. A click on a menu item will raise that client.
@@ -63,17 +60,11 @@ function util.menu_clients_current_tags(menu, args)
     end
 
     -- No clients? Then quit.
-    if #cls_t <= 0
-    then
-        return nil
-    end
+    if #cls_t <= 0 then return nil end
 
     -- menu may contain some predefined values, otherwise start with a
     -- fresh menu.
-    if not menu
-    then
-        menu = {}
-    end
+    if not menu then menu = {} end
 
     -- Set the list of items and show the menu.
     menu.items = cls_t
@@ -155,7 +146,7 @@ function util.tag_view_nonempty(direction, sc)
    local s = sc or mouse.screen or 1
    local scr = screen[s]
 
-   for i = 1, #tags[s] do
+   for i = 1, #awful.tag.gettags(s) do
        awful.tag.viewidx(direction,s)
        if #awful.client.visible(s) > 0 then
            return
@@ -191,7 +182,19 @@ function util.rename_tag(mypromptbox)
     end)
 end
 
--- Delete current tag (if empty)
+-- Move current tag
+-- pos in {-1, 1} <-> {previous, next} tag position
+function util.move_tag(pos)
+    local tag = awful.tag.selected(mouse.screen)
+    local idx = awful.tag.getidx(tag)
+    if tonumber(pos) <= -1 then
+        awful.tag.move(idx - 1, tag)
+    else
+        awful.tag.move(idx + 1, tag)
+    end
+end
+
+-- Remove current tag (if empty)
 -- Any rule set on the tag shall be broken
 function util.remove_tag()
     local tag = awful.tag.selected(mouse.screen)

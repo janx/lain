@@ -14,7 +14,7 @@ Isolated Thunderstorms|Temporali Isolati
 Scattered Thunderstorms|Temporali Sparsi
 Thundershowers|Rovesci Temporaleschi
 Thunderstorms|Temporali
-Thunder in the Vicinity|Tuoni in avvicinamento
+Thunder in the Vicinity|Tuoni in prossimità
 Thunder|Temporale
 AM|In Mattinata
 PM|Nel Pomeriggio
@@ -50,9 +50,11 @@ Windy|Ventoso
 Wind|Ventoso
 Snow|Neve
 Sleet|Nevischio
-Drizzle|Pioggerella
+Light Drizzle|Pioggia Leggera
+Drizzle|Pioggia Leggera
 Freezing Drizzle|Pioggerella Congelantesi
 Hail|Grandine
-Foggy|Nebbia
+Fog|Nebbia
+Foggy|Nebbioso
 Haze|Nebbia
 Light|Leggere

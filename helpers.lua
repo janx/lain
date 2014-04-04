@@ -3,14 +3,14 @@
                                                   
      Licensed under GNU General Public License v2 
       * (c) 2013,      Luke Bonham                
-      * (c) 2010-2012, Peter Hofmann              
                                                   
 --]]
 
 local debug  = require("debug")
 
 local capi   = { timer = timer }
-local io     = { open = io.open }
+local io     = { open = io.open,
+                 lines = io.lines }
 local rawget = rawget
 
 -- Lain helper functions for internal use
@@ -30,18 +30,43 @@ end
 
 -- }}}
 
--- {{{ Read the first line of a file or return nil.
+-- {{{ File operations
 
-function helpers.first_line(f)
-    local fp = io.open(f)
-    if not fp
-    then
-        return nil
-    end
+-- see if the file exists and is readable
+function helpers.file_exists(file)
+  local f = io.open(file)
+  if f then
+      local s = f:read()
+      f:close()
+      f = s
+  end
+  return f ~= nil
+end
 
-    local content = fp:read("*l")
-    fp:close()
-    return content
+-- get all lines from a file, returns an empty 
+-- list/table if the file does not exist
+function helpers.lines_from(file)
+  if not helpers.file_exists(file) then return {} end
+  lines = {}
+  for line in io.lines(file) do 
+    lines[#lines + 1] = line
+  end
+  return lines
+end
+
+-- get first line of a file, return nil if
+-- the file does not exist
+function helpers.first_line(file)
+    return helpers.lines_from(file)[1]
+end
+
+-- get first non empty line from a file,
+-- returns nil otherwise
+function helpers.first_nonempty_line(file)
+  for k,v in pairs(helpers.lines_from(file)) do
+    if #v then return v end 
+  end
+  return nil
 end
 
 -- }}}

@@ -16,7 +16,7 @@ local wibox        = require("wibox")
 local io           = { popen    = io.popen }
 local os           = { execute  = os.execute,
                        getenv   = os.getenv }
-local string       = { format   = string.format, 
+local string       = { format   = string.format,
                        gmatch   = string.gmatch }
 
 local setmetatable = setmetatable
@@ -59,7 +59,7 @@ local function worker(args)
             date   = "N/A"
         }
 
-        local f = io.popen(echo .. " | curl --connect-timeout 1 -fsm 1 " .. mpdh)
+        local f = io.popen(echo .. " | curl --connect-timeout 1 -fsm 3 " .. mpdh)
 
         for line in f:lines() do
             for k, v in string.gmatch(line, "([%w]+):[%s](.*)$") do
